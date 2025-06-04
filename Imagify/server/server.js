@@ -10,7 +10,6 @@ const app = express()
 
 app.use(express.json())
 app.use(cors())
-console.log("good")
 await connectDB()  //connect express app with mongo db database
 
 // create application/json parser

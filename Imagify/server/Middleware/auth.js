@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-
+import userModel from '../models/userModel.js';
 
 
 const userAuth = async (req , res, next)=>{
@@ -10,16 +10,14 @@ const userAuth = async (req , res, next)=>{
     }
 
     try{
-        const tokenDecode = jwt.verify(token, process.env.JWT_SECRET)
-        console.log(tokenDecode)    
-        console.log(tokenDecode.id)
+        const tokenDecode = jwt.verify(token, process.env.JWT_SECRET)   
         if(tokenDecode.id)
         {
-            console.log("ans2");
             // req.body.userId = tokenDecode.id;
             // console.log(req.body)
-            const user = await user.findById(tokenDecode._id)
+            const user = await userModel.findById(tokenDecode.id)
             req.user = user;
+            
         }
         else{
             console.log("ans3");
