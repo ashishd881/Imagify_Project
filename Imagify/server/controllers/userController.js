@@ -57,7 +57,9 @@ const userCredits = async(req,res)=>{
     try {
         const userId  = req.user    //we will not send the request from body instead we will add a middleware that will add the user id in the body
         // const {userId} = req.body
+        // console.log(userId)
         const user = await userModel.findById(userId)     //user using the userId above
+        // console.log("print hoga hat hao",user)
         res.json({success:true, credits:user.creditBalance, user:{name:user.name}})
     } catch (error) {
         console.log(error.message)
