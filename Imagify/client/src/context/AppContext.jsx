@@ -8,8 +8,14 @@ export const AppContext = createContext()
 const AppContextProvider = (props)=>{
     const [user,setUser] = useState(false)
     const [showLogin, setShowLogin] = useState(false);
+    //this has been made after backend is coded
+    const [token , setToken] = useState(localStorage.getItem('token'))    //if theree is any token available in the browser localstorage it will get stored in the token
+    const [credit, setCredit] = useState(false)
+    
+    const backendUrl =  import.meta.env.VITE_BACKEND_URL
+    
     const value = {
-        user, setUser,showLogin,setShowLogin
+        user, setUser,showLogin,setShowLogin,backendUrl,token,setToken,credit,setCredit
     }
 
     return(
