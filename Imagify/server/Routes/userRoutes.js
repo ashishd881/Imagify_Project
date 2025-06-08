@@ -8,7 +8,7 @@ const userRouter = express.Router()
 userRouter.post('/register', registerUser) //http://localhost:4000/api/user/registerUser
 
 userRouter.post('/login', loginUser)    //http://localhost:4000/api/user/login
-userRouter.post('/credits',userAuth,userCredits)  //http://localhost:4000/api/user/credits   
+userRouter.get('/credits',userAuth,userCredits)  //http://localhost:4000/api/user/credits   
 //useAuth is for middleware
 
 export  default userRouter

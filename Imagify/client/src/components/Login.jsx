@@ -20,41 +20,39 @@ function Login() {
       try{
           if(state === 'Login')///we will call the loginapi with the help of axios
           {
-            console.log("ams")
-            const {data} = await axios.post(backendUrl + '/api/user/login',{email, password})
-            console.log(data.user)
+            const {data} = await axios.post(backendUrl + '/api/user/login',{email, password})     //axios.post() method returns a response object 
+            // console.log(data.user)
             if(data.success){
               setToken(data.token)
               setUser(data.user)
-              console.log("ans")
               //store Token in browser localStorage
-              localStorage.getItem('token',data.token)
+              localStorage.setItem('token',data.token)
               setShowLogin(false)
             }
             else{
               //error message will be displayed in the toast notification so we use React-Toastify
-              toast.error("1error aa gayi"+data.message)
+              toast.error(data.message)
             }
           }
           else
           {
-            const {data} = await axios.post(backendUrl + '/api/user/register',{name, email, password})
+            const {data} = await axios. post(backendUrl + '/api/user/register',{name, email, password})
           
             if(data.success){
               setToken(data.token)
               setUser(data.user)
               //store Token in browser localStorage
-              localStorage.getItem('token',data.token)
+              localStorage.setItem('token',data.token)
               setShowLogin(false)
             }
             else{
               //error message will be displayed in the toast notification so we use React-Toastify
-              toast.error("2error aa gayi"+data.message)
+              toast.error(data.message)
             }
           }
       }
       catch(error){
-          toast.error("3error aa gayi " +error.message)
+          toast.error(error.message)
       }
 
     }
