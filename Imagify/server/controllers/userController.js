@@ -4,25 +4,38 @@ import jwt from 'jsonwebtoken'
 
 const registerUser = async(req,res)=>{
     try{
-        const {name, email, password} = req.body;
+        let {name, email, password} = req.body;
         if(!name || !email || !password){
             return res.json({success:false, message:'Missing Details'})
         }
+        
 
         const salt = await bcrypt.genSalt(10)  //10 adds moderate encryption
         const hashedPassword = await bcrypt.hash(password,salt)
-
+        
         const userData = {
             name, 
             email,
             password:hashedPassword 
         }
-        const newUser = new userModel(userData)
-        const user = await newUser.save()  //new user gets saved indata base and we get all its values in user
-
-        const token = jwt.sign({id: user._id},process.env.JWT_SECRET)
+        // console.log(userData)
+        // console.log(name)
+        // console.log(email)
+        // console.log(password)
+        const Validateuser = await userModel.findOne({email})
+        let newUser;
+        let user;
+        let token;
+        if(!Validateuser){
+            newUser = new userModel(userData)
+            user = await newUser.save()  //new user gets saved indata base and we get all its values in user
+            token = jwt.sign({id: user._id},process.env.JWT_SECRET)
+            res.json({success:true,token,user:{name:user.name}})
+        }
+        else{
+            return res.json({success:false,message:"user Already has an Account"})
+        }
         
-        res.json({success:true,token,user:{name:user.name}})
     }
     catch(error){
             console.log(error)
@@ -36,7 +49,7 @@ const loginUser = async(req,res)=>{
         const user = await userModel.findOne({email})
 
         if(!user){
-            return res.json({success:false,message:'User doent exit'})
+            return res.json({success:false,message:'User doesnt exit'})
         }
         const isMatch = await bcrypt.compare(password, user.password)
 

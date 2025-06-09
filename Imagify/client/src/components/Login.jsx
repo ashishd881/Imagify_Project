@@ -41,6 +41,9 @@ function Login() {
             if(data.success){
               setToken(data.token)
               setUser(data.user)
+              // console.log(name)
+              // console.log(email)
+              // console.log(password)
               //store Token in browser localStorage
               localStorage.setItem('token',data.token)
               setShowLogin(false)
