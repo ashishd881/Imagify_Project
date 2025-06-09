@@ -3,10 +3,10 @@ import {Routes, Route} from 'react-router-dom'
 import Home from './pages/Home'
 import Result from './pages/Result'
 import BuyCredit from './pages/BuyCredit'
-import Navbar from './components/navbar'
 import Login from './components/Login'
 import { AppContext } from './context/AppContext'
 import { ToastContainer, toast } from 'react-toastify';
+import Navbar from './components/Navbar'
 
 function App() {
 
