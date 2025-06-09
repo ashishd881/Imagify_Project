@@ -4,7 +4,7 @@ import { motion } from "motion/react"
 import { AppContext } from '../context/AppContext'
 import { useNavigate } from 'react-router-dom'
 function GenerateBtn() {
-
+//comment added from github
     const {user,setShowLogin} = useContext(AppContext)
     const navigate = useNavigate()
     const onClickhandler=()=>{
