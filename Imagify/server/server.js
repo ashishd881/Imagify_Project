@@ -2,7 +2,6 @@ import express from 'express'
 import cors from 'cors'
 import 'dotenv/config'
 import connectDB from './config/mongodb.js'  //extension ke saath likho
-import bodyParser from 'body-parser'
 import userRouter from './Routes/userRoutes.js'
 import imageRouter from './Routes/ImageRoutes.js'
 

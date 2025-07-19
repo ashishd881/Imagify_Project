@@ -1,6 +1,9 @@
 import userModel from "../models/userModel.js";
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'  
+import razorpay from 'razorpay'
+import transactionModel from "../models/transactionModel.js";
+import Razorpay from "razorpay";
 
 const registerUser = async(req,res)=>{
     try{
@@ -80,4 +83,107 @@ const userCredits = async(req,res)=>{
     }
 } 
 
-export {loginUser, registerUser, userCredits}
+const razorpayInstance = new razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret:process.env.RAZORPAY_KEY_SECRET
+})
+
+const paymentRazorpay = async(req,res)=>{
+    try {
+        const {planId} =  req.body
+        const userId = req.user._id
+        const userData = await userModel.findById(userId)   //req.user and user data are same
+        console.log("User ID only:", userId);
+        console.log("Full User Data:", userData);
+        if(!userId || !planId){
+            return res.json({success:false,message:'Missing Details'})
+        }
+
+        let credits,plan,amount,date
+
+        switch(planId){
+            case 'Basic':
+                plan = 'Basic'
+                credits = 10
+                amount  = 10
+                break
+            
+            case 'Advanced':
+                plan = 'Advanced'
+                credits = 500
+                amount  = 50
+                break
+
+            case 'Business':
+                plan = 'Business'
+                credits = 5000
+                amount  = 250
+                break
+            default:
+                return res.json({succes:false, message:'plan not found'})
+        }
+
+        date = Date.now();
+        //now we will create a object to store all the transaction data 
+
+        const transactionData = {
+            userId,plan,amount,credits,date
+        }
+
+        const newTransaction = await transactionModel.create(transactionData)  //transactionData ia stored in data base
+        console.log("new TRan")
+        console.log(newTransaction)
+        const options = {
+            amount: amount*100,  //if we have 155 $ the razorpay considres it as $1.55 so multuiply by 100 razorpay takes paise not rupees
+            currency: process.env.CURRENCY,
+            receipt: newTransaction._id     //this reciept is used to verify the razorpay payments and it verified by the mongdb Id
+        }
+        // Razorpay
+        await razorpayInstance.orders.create(options,(error,order)=>{
+            if(error){
+                // console.log("good5")
+                console.log(error);
+                return res.json({success:false,message:error})
+            }
+            res.json({success:true, order})
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.json({success:false,message:error.message})
+    }
+}
+const verifyRazorpay = async (req,res)=>{
+    try {
+        const {razorpay_order_id} = req.body;
+        const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id)
+        console.log(orderInfo)
+        if(orderInfo.status === 'created'){
+            const transactionData = await transactionModel.findById(orderInfo.receipt)
+            console.log(transactionData)
+            if(transactionData.payment){
+                return res.json({success:false,message:'payment failed'})
+            }
+            console.log("good1")
+            const userData = await userModel.findById(transactionData.userId)
+            console.log("good2")
+            console.log(userData)
+            const creditBalance = userData.creditBalance + transactionData.credits
+            await userModel.findByIdAndUpdate(userData._id,{creditBalance})
+            
+            await transactionModel.findByIdAndUpdate(transactionData._id,{paymecnt:true})
+
+            res.json({success:true, message:"Credits Added"})
+        }
+        else{
+            res.json({success:false,message:"payment Failed"})
+        }
+    } catch (error) {
+        console.log("yaha")
+        console.log(error)
+        res.json({success:false,message: error.message})
+        
+    }
+}
+
+export {loginUser, registerUser, userCredits, paymentRazorpay,verifyRazorpay}

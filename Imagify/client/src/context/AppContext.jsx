@@ -38,7 +38,7 @@ const AppContextProvider = (props)=>{
 
     const generateImage = async (prompt)=>{
         try {
-            console.log("gppf")
+            // console.log("gppf")
             const {data} = await axios.post(backendUrl+'/api/image/generate-Image',{prompt},{headers:{token}})  //curly braces lag ake prompt bejh diya
             if(data.success){
                 loadCreditsData()

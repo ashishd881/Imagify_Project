@@ -20,15 +20,15 @@ const userAuth = async (req , res, next)=>{
             
         }
         else{
-            console.log("ans3");
+            // console.log("ans3");
             return res.json({success:false,message:'Not Authorized. Login Again'})
         }
         next();
 
     }
     catch(error){
-        console.log(req.body)
-        console.log("ans4");
+        // console.log(req.body)
+        // console.log("ans4");
         res.json({success:false, message: error.message})
     }
 }
