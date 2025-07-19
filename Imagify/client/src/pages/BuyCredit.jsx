@@ -70,7 +70,7 @@ function BuyCredit() {
         whileInView={{ opacity: 1, y: 0}}
         viewport={{ once: true }}>
         <button className='border border-gray-400 px-10 py-2 rounded-full mb-6'>Our Plans</button>
-        <h1 className='text-center '>Choose THe Plan</h1>
+        <h1 className='text-center mb-4'>Choose The Plan</h1>
         <div className='flex flex-wrap justify-center gap-6 text-left'>
             {plans.map((item,index)=>(
               <div key={index} className='bg-white drop-shadow-sm border rounded-lg py-12 px-8 text-gray-600 hover:scale-105 transition-all duration-500'>
@@ -79,7 +79,7 @@ function BuyCredit() {
                 <p className='text-sm'>{item.desc}</p>
                 <p className='mt-6'>
                     <span className='text-3xl font-medium'>₹{item.price}</span> / {item.credits} credits</p>
-                <button onClick={()=>paymentRazorpay(item.id)} className='w-full bg-gray-800 text-white mt-8 text-sm rounded-md py-2.5 min-w-52'>{user ? 'Purchase' : 'Get Started'}</button>
+                <button onClick={()=>paymentRazorpay(item.id)} className='w-full bg-gray-800 text-white mt-8 text-sm rounded-md py-2.5 min-w-52 cursor-pointer'>{user ? 'Purchase' : 'Get Started'}</button>
               </div>
             ))}
         </div>

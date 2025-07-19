@@ -22,7 +22,7 @@ function GenerateBtn() {
         whileInView={{ opacity: 1, y: 0}}
         viewport={{ once: true }}>
       <h1 className='text-2xl md:text-3xl lg:text-4xl mt-4 font-semibold text-netural-800 py-6 md:py-16'>See The Magic .Try Now</h1>
-      <button onClick={onClickhandler} className='cursor-pointer inline-flex items-center gap-2 px-2 py-3 rounded-full bg-black text-white m-auto hover:scale-105 transition-all duration-500'>
+      <button onClick={onClickhandler} className='inline-flex items-center gap-2 px-2 py-3 rounded-full bg-black text-white m-auto hover:scale-105 transition-all duration-500 cursor-pointer'>
         Generate Images
         <img src={assets.star_group} className='h-6'/>
       </button>

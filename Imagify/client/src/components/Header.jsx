@@ -39,7 +39,7 @@ function Header() {
         <p className='text-center max-w-xl mt-3'> 
             Unleash your Creativity with Ai .Turn your imagination into visual arts in seconds - just type and watch the magic happen.
         </p>
-        <motion.button className='sm:text-lg text-white bg-black w-auto mt-8 py-2.5 px-7 flex gap-2 items-center rounded-full' 
+        <motion.button className='cursor-pointer sm:text-lg text-white bg-black w-auto mt-8 py-2.5 px-7 flex gap-2 items-center rounded-full' 
             whileHover={{scale:1.05}}
             whileTap={{scale:0.95}}
             initial={{opacity:0}}
