@@ -154,13 +154,13 @@ const paymentRazorpay = async(req,res)=>{
     }
 }
 const verifyRazorpay = async (req,res)=>{
-    console.log("jk")
+    // console.log("jk")
     try {
         const {razorpay_order_id} = req.body;
-        console.log(razorpay_order_id)
+        // console.log(razorpay_order_id)
         const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id)
-        console.log("not runninf")
-        console.log(orderInfo)
+        // console.log("not runninf")
+        // console.log(orderInfo)
         if(orderInfo.status === 'paid'){
             const transactionData = await transactionModel.findById(orderInfo.receipt)
             console.log(transactionData)
