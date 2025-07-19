@@ -16,18 +16,25 @@ function BuyCredit() {
       amount: order.amount,
       currency: order.currency,
       name:'Credits payment',
-      descriptionL:'Credits Payment',
+      description:'Credits Payment',
       order_id: order.id,
       receipt: order.receipt,
       handler: async(response)=>{
         try {
-          const {data} = await axios.post(backendUrl+'/api/user/verify-razor',response,{headers:{token}})
+          const { razorpay_order_id } = response;
+          console.log(razorpay_order_id)
+          console.log("goodies")
+          const {data} = await axios.post(backendUrl+'/api/user/verify-razor',{ razorpay_order_id },{headers:{token}})
+          console.log("fdsjkkfds")
+          console.log(data)
           if(data.success){
             loadCreditsData();
             navigate('/')
-            toString.success("Credit Added")
+            toast.success("Credit Added")
           }
         } catch (error) {
+          console.log("yaha se error aa rhai hai")
+      console.log(error.message)
           toast.error(error.message)
         }
 
@@ -43,11 +50,15 @@ function BuyCredit() {
         setShowLogin(true)
       }
       const {data} = await axios.post(backendUrl+ '/api/user/pay-razor',{planId},{headers:{token}})
+      console.log(data)
+      
       if(data.success){
         initPay(data.order)
       }
     
     } catch (error) {
+      // console.log("good")
+      // console.log(error.message)
       toast.error(error.message)
     }
   }

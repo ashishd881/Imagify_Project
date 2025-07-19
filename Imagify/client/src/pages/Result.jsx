@@ -15,6 +15,7 @@
       setLoading(true)
       if(input){
         const image = await generateImage(input)
+        setInput('')
         if(image){
           setIsImageLoaded(true)
           setImage(image)

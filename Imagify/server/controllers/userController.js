@@ -93,8 +93,8 @@ const paymentRazorpay = async(req,res)=>{
         const {planId} =  req.body
         const userId = req.user._id
         const userData = await userModel.findById(userId)   //req.user and user data are same
-        console.log("User ID only:", userId);
-        console.log("Full User Data:", userData);
+        // console.log("User ID only:", userId);
+        // console.log("Full User Data:", userData);
         if(!userId || !planId){
             return res.json({success:false,message:'Missing Details'})
         }
@@ -131,8 +131,8 @@ const paymentRazorpay = async(req,res)=>{
         }
 
         const newTransaction = await transactionModel.create(transactionData)  //transactionData ia stored in data base
-        console.log("new TRan")
-        console.log(newTransaction)
+        // console.log("new TRan")
+        // console.log(newTransaction)
         const options = {
             amount: amount*100,  //if we have 155 $ the razorpay considres it as $1.55 so multuiply by 100 razorpay takes paise not rupees
             currency: process.env.CURRENCY,
@@ -142,23 +142,26 @@ const paymentRazorpay = async(req,res)=>{
         await razorpayInstance.orders.create(options,(error,order)=>{
             if(error){
                 // console.log("good5")
-                console.log(error);
+                // console.log(error);
                 return res.json({success:false,message:error})
             }
             res.json({success:true, order})
         })
 
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.json({success:false,message:error.message})
     }
 }
 const verifyRazorpay = async (req,res)=>{
+    console.log("jk")
     try {
         const {razorpay_order_id} = req.body;
+        console.log(razorpay_order_id)
         const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id)
+        console.log("not runninf")
         console.log(orderInfo)
-        if(orderInfo.status === 'created'){
+        if(orderInfo.status === 'paid'){
             const transactionData = await transactionModel.findById(orderInfo.receipt)
             console.log(transactionData)
             if(transactionData.payment){
@@ -170,9 +173,10 @@ const verifyRazorpay = async (req,res)=>{
             console.log(userData)
             const creditBalance = userData.creditBalance + transactionData.credits
             await userModel.findByIdAndUpdate(userData._id,{creditBalance})
-            
-            await transactionModel.findByIdAndUpdate(transactionData._id,{paymecnt:true})
-
+            console.log(transactionData)
+            const updated = await transactionModel.findByIdAndUpdate(transactionData._id,{payment:true},{ new: true } )  // Mongoose follows MongoDB defaults: the update query updates the database, but returns the original document unless you explicitly request the new one.
+//Without { new: true }, your database is still updated, but the result you log is stale.  so new true  is used to send the new data 
+            console.log(updated)
             res.json({success:true, message:"Credits Added"})
         }
         else{
