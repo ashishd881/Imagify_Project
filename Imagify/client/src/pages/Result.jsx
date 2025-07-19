@@ -40,7 +40,7 @@
                 <div className='flex w-full max-w-xl bg-neutral-500 text-white text-sm p-0.5 mt-10 rounded-full'>
                   <input onChange={(e)=>setInput(e.target.value) } value={input}
                   type="text" placeholder='Describe what you want to generate ' className='flex-1 bg-transparent outline-none ml-1 max-sm:w-20 '/>
-                  <button type='submit' className=' text-white bg-zinc-900 sm:px-6 py-3 rounded-full placeholder-color'>
+                  <button type='submit' className=' text-white bg-zinc-900 sm:px-6 py-3 rounded-full placeholder-color cursor-pointer'>
                     Generate
                   </button>
                 </div>

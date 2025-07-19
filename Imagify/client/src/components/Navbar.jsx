@@ -7,8 +7,13 @@ function Navbar() {
 
     //now we will get user from Appcontext file by using useContext
     const {user,setShowLogin,logout,credit} = useContext(AppContext)
+    
 
     const navigate = useNavigate()
+    const logoutHandler=()=>{
+        logout()
+        navigate('/')
+    }
   return (
     <div className='flex items-center justify-between py-4 '>
         {/* the image link will open the home page due to / */}
@@ -28,7 +33,7 @@ function Navbar() {
                     <img src={assets.profile_icon} className='drop-shadow h-8'/>
                     <div className='absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-12'>
                         <ul className='list-none m-0 p-2 bg-white rounded-md text-sm '>
-                            <li onClick={logout} className='py-1 px-2 cursor-pointer'>
+                            <li onClick={logoutHandler} className='py-1 px-2 cursor-pointer'>
                                 logout
                             </li>
                         </ul>
