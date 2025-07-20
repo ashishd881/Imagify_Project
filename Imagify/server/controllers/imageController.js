@@ -1,45 +1,61 @@
 import axios from "axios"
 import userModel from "../models/userModel.js"
-import FormData from "form-data"
 
-export const generateImage = async(req,res)=>{
-    try {
-        
-        const {prompt} = req.body    //we will get the prompt from body and for userId we will  use the middleware
-        const userId = req.user
-        // console.log(prompt);
-        // console.log(userId)
-        const user = await userModel.findById(userId)
-        
-        if(!user || !prompt){
-            return res.json({success :false,message: "Missing Details"})
-        }
-        if(user.creditBalance === 0 || user.creditBalance < 0 ){
-            return res.json({success:false, message:'No Credit Balance', creditBalance: user.creditBalance})
-        }
-        // console.log("error1")
-        //creting the multipart form data
-        const formData = new FormData()
-        formData.append('prompt',prompt)
 
-        const {data}  = await axios.post('https://clipdrop-api.co/text-to-image/v1',formData,{      //in data w ewill get the response as array buffer
+
+export const generateImage = async (req, res) => {
+  try {
+        const { prompt } = req.body;
+        const userId = req.user;
+
+        const user = await userModel.findById(userId);
+        if (!user || !prompt) {
+        return res.json({ success: false, message: "Missing Details" });
+        }
+        if (user.creditBalance <= 0) {
+        return res.json({ success: false, message: "No Credit Balance", creditBalance: user.creditBalance });
+        }
+
+        console.log("Calling Hugging Face API...");
+
+        const response = await axios.post(
+        "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev",
+        { inputs: prompt },
+        {
             headers: {
-                'x-api-key': process.env.CLIPDROP_API,
+            Authorization: `Bearer ${process.env.HF_TOKEN}`,
+            "Content-Type": "application/json",
+            "Accept": "image/png", // explicitly request image
             },
-            responseType:'arraybuffer'
-        })
-        // console.log("error2")
-        const base64Image = Buffer.from(data,'binary').toString('base64')
-        const resultImage = `data:image/png;base64,${base64Image}`
-        // console.log(base64Image)
-        // console.log(resultImage)
-        await userModel.findByIdAndUpdate(user._id,{creditBalance:user.creditBalance - 1})
-        res.json({success:true, message:"Image Generated",creditBalance: user.creditBalance-1, resultImage})
+            responseType: "arraybuffer", // now expect raw image bytes
+        }
+        );
 
+        const base64Image = Buffer.from(response.data, "binary").toString("base64");
+        const resultImage = `data:image/png;base64,${base64Image}`;
+
+        await userModel.findByIdAndUpdate(user._id, {
+        creditBalance: user.creditBalance - 1,
+        });
+
+        res.json({
+        success: true,
+        message: "Image Generated",
+        creditBalance: user.creditBalance - 1,
+        resultImage,
+        });
     } catch (error) {
-        console.log(error.message)
-        // console.log("yaha se error aa rahi hai")
-        res.json({success:false, message:error.message})
+        let errorDetails = "";
+        if (error.response?.data) {
+        errorDetails = Buffer.isBuffer(error.response.data)
+            ? error.response.data.toString()
+            : JSON.stringify(error.response.data);
+        console.error("Hugging Face Error Response:", errorDetails);
+        }
+        res.json({
+        success: false,
+        message: error.response?.data?.error || error.message || "Unknown error",
+        details: errorDetails,
+        });
     }
-}
-
+    };

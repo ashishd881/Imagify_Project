@@ -5,7 +5,7 @@ import './index.css'
 import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(
-  //      //BrowserRouter ka suppport mil gaua app component me
+  //      //BrowserRouter ka suppport mil gaya app component me
   //we can access the context file with appContextProvider in App
   <BrowserRouter>
     <AppContextProvider>

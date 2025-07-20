@@ -22,11 +22,10 @@ function BuyCredit() {
       handler: async(response)=>{
         try {
           const { razorpay_order_id } = response;
-          console.log(razorpay_order_id)
-          console.log("goodies")
+          // console.log(razorpay_order_id)
+          // console.log("goodies")
           const {data} = await axios.post(backendUrl+'/api/user/verify-razor',{ razorpay_order_id },{headers:{token}})
-          console.log("fdsjkkfds")
-          console.log(data)
+          // console.log(data)
           if(data.success){
             loadCreditsData();
             navigate('/')
